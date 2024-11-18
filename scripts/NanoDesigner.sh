@@ -1,6 +1,7 @@
 #!/bin/zsh
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 path_to_json_file"
+    echo "Make sure is named as XXXX.json (if nanobody-antigen complex) or XXXX_XXXX.json (if nanobody and antigen comes from different PDB sources (ID: XXXX)." 
     exit 1
 fi
 
