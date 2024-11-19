@@ -1,6 +1,6 @@
 # Establishment and Evaluation of an End-to-End Computational Workflow for the Design and Optimization of Nanobodies: NanoDesigner
 
-![Alt text](https://github.com/Melissaurious/NanoDesigner/blob/main/NanoDesigner_.png)
+![Alt text](https://github.com/bio-ontology-research-group/NanoDesigner/blob/main/NanoDesigner_.png)
 
 NanoDesigner is an end-to-end workflow for the design and optimization of nanobodies. It integrates key stages—Structure Prediction, Docking, CDR Generation,and Side-Chain Packing—into an iterative framework based on an Expectation Maximization algorithm. Our method effectively tackles an often overlooked interdependency
 challenge where accurate docking presupposes a priori knowledge of the CDR conformation, while effective CDR generation relies on accurate docking outputs to guide its design.
