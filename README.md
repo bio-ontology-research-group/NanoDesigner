@@ -1,4 +1,4 @@
-# Establishment and Evaluation of an End-to-End Computational Workflow for the Design and Optimization of Nanobodies: NanoDesigner
+# NanoDesigner: Resolving the Complex-CDR Interdependency with Iterative Refinement
 
 ![Alt text](https://github.com/bio-ontology-research-group/NanoDesigner/blob/main/NanoDesigner_.png)
 
