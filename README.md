@@ -97,6 +97,10 @@ bash scripts/train_tool.sh
 ```
 
 
+**Note:** The 10-fold generated datasets, used to conduct the proof of concept for this project, can be found in [this Google Drive folder](https://drive.google.com/drive/folders/1CzBCQGvpHiBCufGCLoa15-fe9c0Mg1Xq?usp=share_link). For details on how these datasets were generated, please refer to the [Data Download and Preprocess](#data-download-and-preprocess) section.
+
+
+
 ## NanoDesigner
 
 NanoDesigner is an end-to-end workflow designed for both **de novo** and **optimization** cases in nanobody-antigen complex design. The workflow script is located in the `scripts` folder and can be executed as follows:
