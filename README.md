@@ -6,6 +6,10 @@ NanoDesigner is an end-to-end workflow for the design and optimization of nanobo
 challenge where accurate docking presupposes a priori knowledge of the CDR conformation, while effective CDR generation relies on accurate docking outputs to guide its design.
 
 
+**Journal of Cheminformatics** 17, 120 (2025).  
+📄 [Read the paper here](https://doi.org/10.1186/s13321-025-01069-2) | [Journal link](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-025-01069-2)
+
+
 ## Table of Contents
 - [Installation](#installation)
 - [External Tool Installation](#external-tool-installation)
@@ -279,7 +283,8 @@ CDRH3 or 3CDRs design with ΔG optimization objective.
 
 
 ## Citation
-TODO
+
+Rios Zertuche, M.M., Kafkas, Ş., Renn, D. et al. Nanodesigner: resolving the complex-CDR interdependency with iterative refinement. J Cheminform 17, 120 (2025). https://doi.org/10.1186/s13321-025-01069-2
 
 ## License
 TODO
