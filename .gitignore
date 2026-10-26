@@ -34,3 +34,5 @@ pycache/
 
 logs/
 
+__pycache__/
+*.pyc
