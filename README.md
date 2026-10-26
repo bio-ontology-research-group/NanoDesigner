@@ -32,13 +32,13 @@ cd NanoDesigner
 
 ### Create and activate the Conda environment for graph-based models
 ```bash
-conda env create -f nanodesigner_1.yml -n nanodesigner1
+conda env create -f nanodesigner1.yml -n nanodesigner1
 conda activate nanodesigner1
 ```
 
 ### Create and activate the Conda environment for difussion-based model
 ```bash
-conda env create -f nanodesigner_2.yml -n nanodesigner2
+conda env create -f nanodesigner2.yml -n nanodesigner2
 conda activate nanodesigner2
 ```
 
@@ -51,7 +51,7 @@ The following repositories and software tools are required for NanoDesigner. Clo
 - [Rosetta](https://docs.rosettacommons.org/demos/latest/tutorials/install_build/install_build)
 - [FoldX](https://foldxsuite.crg.eu/products#foldx) - *Academic license employed.*
 - [HDOCK](http://huanglab.phys.hust.edu.cn/software/hdocklite/)
-- [dr_sasa_n](https://github.com/nioroso-x3/dr_sasa_n) - *Follow the instructions in the repository to compile this tool.*
+- [dr_sasa_n](https://github.com/nioroso-x3/dr_sasa_n) - *Follow the instructions in the repository to compile this tool. It must end up at `./NanoDesigner/dr_sasa_n/`, since the pipeline resolves the binary as `dr_sasa_n/build/dr_sasa` relative to the project directory.*
 
 After installing the tools, ensure to update the `dyMEAN/configs.py` file with the full paths to the installed tools.
 
@@ -67,12 +67,12 @@ g++ -static -O3 -ffast-math -lm -o evaluation/TMscore evaluation/TMscore.cpp
 The data download and preparation steps are necessary to replicate our data processing, filtering, and preparation for training and inference. All required instructions are included in the following scripts.
 
 ### 1. Preprocess the Data
-Use the `download_and_process_data_reduced.py` script to download SAbDab structures, extract CDR information, and analyze antibody-antigen interactions based on solvent-accessible surface area (dSASA).
+Use the `./Data_download_and_processing/scripts/download_and_process_data.py` script to download SAbDab structures, extract CDR information, and analyze antibody-antigen interactions based on solvent-accessible surface area (dSASA).
 The preprocessing pipeline performs structure validation, CDR extraction, interaction analysis, and epitope mapping. It automatically handles data download, quality filtering, and generates the final dataset with mapped epitopes from CDR-antigen contacts.
 
 #### Usage
 ```bash
-python download_and_process_data_reduced.py \
+python ./Data_download_and_processing/scripts/download_and_process_data.py \
     --output_folder <output_directory> \
     --type <Antibody|Nanobody> \
     --numbering <imgt|chothia> \
@@ -133,7 +133,7 @@ The tested configurations systematically assess model performance across differe
 ### Running Assessments
 To replicate our generate evaluation results run:
 ```bash
-./NanoDesigner/scripts/CDRH3_model_assessment.sh
+./NanoDesigner/Tool_assesment_experiment_1/CDRH3_model_assessment.bash
 ```
 
 #### Variables to update
@@ -146,7 +146,7 @@ To replicate our generate evaluation results run:
 
 
 ### Checkpoints
-The `./NanoDesigner/scripts/CDRH3_model_assessment.sh` will autoamtically locate the trained checkpoints for each tool and training configuration as long as the directory structure is respected as in [here](https://drive.google.com/drive/folders/1SZUP4ovqYtHjxIQSJ4-UoO60wW3YN-lj?usp=share_link)
+The `./NanoDesigner/Tool_assesment_experiment_1/CDRH3_model_assessment.bash` will automatically locate the trained checkpoints for each tool and training configuration as long as the directory structure is respected as in [here](https://drive.google.com/drive/folders/1SZUP4ovqYtHjxIQSJ4-UoO60wW3YN-lj?usp=share_link)
 
 ```
 all_checkpoints/
@@ -192,7 +192,7 @@ The performance measures presented in:
 - Supplementary Material Tables 2 & 3
 - Main Text Table 1
 
-were generated using `NanoDesigner/Tool_assesment_results/generate_tables_experiment_1.ipynb`. This notebook processes the assessment outputs to produce the comparative tables in our publication.
+were generated using `./NanoDesigner/Tool_assesment_experiment_1/generate_tables_experiment_1.ipynb`. This notebook processes the assessment outputs to produce the comparative tables in our publication.
 
 
 
@@ -249,21 +249,38 @@ were generated using `./NanoDesigner/NanoDesigner_assessment_experiment_2/genera
 ### Test Cases
 
 
-In some cases researchers may want to design a nanobody targeting an antigen of therapeutic interest for which a complex may not be available. An input preparation step is required prior running NanoDesigner. In these cases, the user can provide the desired VHH scaffold and target antigen crystal stucture sources, as well as the desired target epitope (as a sequence; the program also accept non-continues sequences e.g. "YKLV;CLL"). Chain isolation is handled for cases in which the VHH scaffold or antigen are in bound state with other proteins.
+In some cases researchers may want to design a nanobody targeting an antigen of therapeutic interest for which a complex may not be available. An input preparation step is required prior to running NanoDesigner. In these cases, the user provides the desired VHH scaffold and target antigen structure sources, as well as the desired target epitope. Chain isolation is handled for cases in which the VHH scaffold or antigen are in a bound state with other proteins.
 
-In our manuscript we ran Nanodesigner for the de novo design of VHH naobodies targeting different antigens of interest:
+All input preparation is done in a single notebook:
 
-**For 6LR7-4OBE and 6LR7-5LRT**, please follow the instructions and run `./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_test_cases_input_prep.ipynb` notebook, it will ouput one json file per provided epitope sequence for which we recommend to place inside `./NanoDesigner/NanoDesigner_test_Cases/6lr7_5lrt` renamed as dataset.json. You can now proceed to run the pipeline as: 
+`./NanoDesigner/NanoDesigner_test_Cases/prepare_NanoDesigner_inputs_Denovo.ipynb`
+Open it with the nanodesigner1 kernel, set PROJECT_DIR in the first cell to your NanoDesigner clone, and fill in the config dictionary of whichever part applies to your target. Structures are downloaded automatically from RCSB and SAbDab, so only PDB codes and chain identifiers are needed — no files have to be prepared by hand.
 
-```bash
-bash ./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_pipeline.sh 6lr7_5lrt
+Every case requires two independent inputs, and it is important not to confuse them:
+
+The VHH scaffold (Nano_source_pdb and nano_chain_id) — the nanobody whose framework will be redesigned. This must be a nanobody (a VHH with no light chain), so light_chain_id is left as "". Any nanobody of your choice can be used; in our test cases we used chain B of 7EOW (caplacizumab). If you have a VHH sequence but no structure for it, see the optional cell at the end of the notebook.
+The target antigen (Antigen_source_pdb / Antigen_complex_source_pdb and antigen_chain_id) — the protein you want to bind, together with the epitope on it.
+The two come from different PDB entries in most de novo cases. The scaffold supplies the nanobody; the antigen entry supplies the target and, in Part 2, the epitope.
+
+
+- Part 1 — epitope given as a sequence. Use this when you already know which residues to target. Non-contiguous epitopes are supported using ; as a separator, e.g. "YKLV;CLL". This is the route used for the 6LR7-4OBE and 6LR7-5LRT test cases in the manuscript.
+
+- Part 2 — epitope extracted from a known complex. Use this when the epitope is defined by an existing antibody or nanobody bound to your antigen. Give the PDB entry of that complex along with the antigen chain and the binder's heavy and light chain identifiers (immunoglobulin_heavy_chain / immunoglobulin_light_chain); the interface residues are computed with the same dSASA definition the pipeline uses internally. Note that the binder in this complex only defines where to bind — it is not the scaffold, and it may be a conventional antibody even though the design target is a nanobody. The scaffold is still whatever you set in Nano_source_pdb. This is the route used for the 7EOW-8PWH test case, where the epitope is taken from HER2 bound to the therapeutic antibodies PERTUZUMAB and TRASTUZUMAB, prior to chain isolation, while the scaffold is the nanobody from 7EOW.
+
+Optional — scaffold from sequence. If you have a VHH sequence but no structure for it, the last cell of the notebook folds it with ImmuneBuilder and writes scaffold.pdb, which can then be used as the nanobody source.
+
+The notebook writes one JSON file per epitope, named <nanobody>_<antigen>_ep_<N>.json, alongside the cleaned nanobody and antigen structures. Pass that file straight to the pipeline:
+
+bash ./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_pipeline.sh <path_to_json>
+For example:
+
 ```
-
-**For 7EOW-8PW**H, please follow the instructions and run `./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_test_cases_input_prep_HER2.ipynb` notebook, it will ouput one json file per provided epitope sequence for which we recommend to place inside `./NanoDesigner/NanoDesigner_test_Cases/7eow_8pwh` renamed as dataset.json. In this special case, the epitope is extracted analyzing the binding interface of HER2 protein bound to two monoclonal therapeutic antibodies prior chain isolation: PERTUZUMAB and TRASTUZUMAB. You can now proceed to run the pipeline as: 
-
-```bash
-bash ./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_pipeline.sh 7eow_8pwh
+bash ./NanoDesigner/NanoDesigner_test_Cases/NanoDesigner_pipeline.sh \
+     ./NanoDesigner/NanoDesigner_test_Cases/denovo_epitope_info/6lr7_5lrt/6lr7_5lrt_ep_1.json
 ```
+Do not rename the file. Its name without the .json extension becomes the case name, and the notebook already makes this match the pdb field stored inside the file, which is what the pipeline uses to name its outputs. A second argument can be given to resume from a later iteration if a run is interrupted.
+
+Note that this uses NanoDesigner_test_Cases/NanoDesigner_pipeline.sh rather than the scripts under NanoDesigner_assessment_experiment_2/. The latter read their input from the benchmark test.json splits and will not accept a user-supplied JSON.
 
 
 #### Variables to update
