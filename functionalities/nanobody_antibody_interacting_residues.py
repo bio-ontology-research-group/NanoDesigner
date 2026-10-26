@@ -106,11 +106,17 @@ def interacting_residues(item, pdb_file, antigen, tmp_dir):
     start_time = time.time() 
     # # Change the current working directory to the output directory
     out_dir = tmp_dir
-    current_working_dir = os.getcwd()
-    parent_directory = os.path.dirname(current_working_dir)
-    dSASA_path = os.path.join(parent_directory, "dr_sasa_n", "build", "dr_sasa")
-
-
+    # dr_sasa location. NANOBODIES_PROJECT_DIR is set by the pipeline scripts
+    # and by prepare_NanoDesigner_inputs_Denovo.ipynb; the cwd-relative guess is
+    # kept only as a fallback for older callers.
+    _project_dir = os.environ.get("NANOBODIES_PROJECT_DIR") or os.path.dirname(os.getcwd())
+    dSASA_path = os.path.join(_project_dir, "dr_sasa_n", "build", "dr_sasa")
+    if not os.path.isfile(dSASA_path):
+        raise FileNotFoundError(
+            "dr_sasa not found at {}. Build dr_sasa_n inside the NanoDesigner "
+            "directory, or set NANOBODIES_PROJECT_DIR to the clone that "
+            "contains it.".format(dSASA_path)
+        )
     command = [dSASA_path, "-m", "4", "-i", pdb_file]
 
     try:
@@ -328,9 +334,17 @@ def interacting_residues_extended(item, pdb_file, antigen, tmp_dir, cdr_type:Non
     start_time = time.time() 
     # # Change the current working directory to the output directory
     out_dir = tmp_dir
-    current_working_dir = os.getcwd()
-    parent_directory = os.path.dirname(current_working_dir)
-    dSASA_path = os.path.join(parent_directory, "dr_sasa_n", "build", "dr_sasa")
+    # dr_sasa location. NANOBODIES_PROJECT_DIR is set by the pipeline scripts
+    # and by prepare_NanoDesigner_inputs_Denovo.ipynb; the cwd-relative guess is
+    # kept only as a fallback for older callers.
+    _project_dir = os.environ.get("NANOBODIES_PROJECT_DIR") or os.path.dirname(os.getcwd())
+    dSASA_path = os.path.join(_project_dir, "dr_sasa_n", "build", "dr_sasa")
+    if not os.path.isfile(dSASA_path):
+        raise FileNotFoundError(
+            "dr_sasa not found at {}. Build dr_sasa_n inside the NanoDesigner "
+            "directory, or set NANOBODIES_PROJECT_DIR to the clone that "
+            "contains it.".format(dSASA_path)
+        )
     command = [dSASA_path, "-m", "4", "-i", pdb_file]
 
     try:

@@ -36,3 +36,8 @@ logs/
 
 __pycache__/
 *.pyc
+dr_sasa_n
+*.bak
+dr_sasa_n
+_diagnose*/
+*.bak
